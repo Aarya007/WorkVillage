@@ -2401,9 +2401,14 @@ const OnboardingForm = forwardRef(({
   }
 
   return (
-    <div className={`rounded-xl shadow-lg p-8 ${
-      Boolean(isDarkMode) ? 'bg-gray-800' : 'bg-white'
-    }`}>
+    <div
+      className={`rounded-xl shadow-lg p-8 ${
+        Boolean(isDarkMode) ? 'bg-gray-800' : 'bg-white'
+      }`}
+      style={{
+        '--checkbox-accent-color': isDarkMode ? '#10B981' : '#21c45d'
+      }}
+    >
       {/* Header */}
       {showHeader && (
         <div className="flex items-center justify-between mb-6">
