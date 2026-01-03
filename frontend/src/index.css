@@ -103,16 +103,16 @@
 /* Custom Checkbox and Radio Button Styles */
 input[type="checkbox"]:checked,
 input[type="radio"]:checked {
-  accent-color: var(--checkbox-accent-color, #21c45d);
-  background-color: var(--checkbox-accent-color, #21c45d);
+  accent-color: var(--checkbox-accent-color, #db2778);
+  background-color: var(--checkbox-accent-color, #db2778);
 }
 
 /* Additional styling for better appearance */
 input[type="checkbox"] {
-  accent-color: var(--checkbox-accent-color, #21c45d);
+  accent-color: var(--checkbox-accent-color, #db2778);
 }
 
 input[type="radio"] {
-  accent-color: var(--checkbox-accent-color, #21c45d);
+  accent-color: var(--checkbox-accent-color, #db2778);
 }
 

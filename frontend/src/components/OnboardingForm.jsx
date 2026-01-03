@@ -2406,7 +2406,7 @@ const OnboardingForm = forwardRef(({
         Boolean(isDarkMode) ? 'bg-gray-800' : 'bg-white'
       }`}
       style={{
-        '--checkbox-accent-color': isDarkMode ? '#10B981' : '#21c45d'
+        '--checkbox-accent-color': isDarkMode ? '#10B981' : '#db2778'
       }}
     >
       {/* Header */}
