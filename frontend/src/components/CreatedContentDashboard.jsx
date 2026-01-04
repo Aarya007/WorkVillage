@@ -103,6 +103,18 @@ function CreatedContentDashboard() {
   const [scheduleData, setScheduleData] = useState({ date: '', time: '', contentId: null })
   const [isScheduling, setIsScheduling] = useState(false)
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
+
+  // Publish confirmation modal state
+  const [showPublishModal, setShowPublishModal] = useState(false)
+  const [itemToPublish, setItemToPublish] = useState(null)
+
+  // Schedule confirmation modal state
+  const [showScheduleConfirmModal, setShowScheduleConfirmModal] = useState(false)
+  const [itemToSchedule, setItemToSchedule] = useState(null)
+
   // Action loading states
   const [isDeleting, setIsDeleting] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
@@ -232,12 +244,14 @@ function CreatedContentDashboard() {
   }
 
   const handleDelete = async (contentItem) => {
-    if (!window.confirm(`Are you sure you want to delete "${contentItem.title || 'this content'}"? This action cannot be undone.`)) {
-      return
-    }
+    setItemToDelete(contentItem)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return
 
     setIsDeleting(true)
-
     try {
       const token = await getAuthToken()
 
@@ -245,7 +259,7 @@ function CreatedContentDashboard() {
       const { error } = await supabase
         .from('created_content')
         .delete()
-        .eq('id', contentItem.id)
+        .eq('id', itemToDelete.id)
         .eq('user_id', user.id) // Security: ensure user can only delete their own content
 
       if (error) {
@@ -255,9 +269,11 @@ function CreatedContentDashboard() {
       }
 
       // Remove from local state
-      setContent(prev => prev.filter(item => item.id !== contentItem.id))
+      setContent(prev => prev.filter(item => item.id !== itemToDelete.id))
 
       showSuccess('Content deleted successfully')
+      setShowDeleteModal(false)
+      setItemToDelete(null)
 
     } catch (error) {
       console.error('Error deleting content:', error)
@@ -268,9 +284,19 @@ function CreatedContentDashboard() {
   }
 
   const handleSchedule = (contentItem) => {
-    // Open schedule modal
-    setScheduleData({ date: '', time: '', contentId: contentItem.id })
+    // Open schedule confirmation modal
+    setItemToSchedule(contentItem)
+    setShowScheduleConfirmModal(true)
+  }
+
+  const confirmSchedule = () => {
+    if (!itemToSchedule) return
+
+    // Set up schedule data and open the schedule modal
+    setScheduleData({ date: '', time: '', contentId: itemToSchedule.id })
     setShowScheduleModal(true)
+    setShowScheduleConfirmModal(false)
+    setItemToSchedule(null)
   }
 
   const handleScheduleConfirm = async () => {
@@ -323,6 +349,13 @@ function CreatedContentDashboard() {
   }
 
   const handlePublish = async (contentItem) => {
+    setItemToPublish(contentItem)
+    setShowPublishModal(true)
+  }
+
+  const confirmPublish = async () => {
+    if (!itemToPublish) return
+
     try {
       setIsPublishing(true)
 
@@ -340,23 +373,23 @@ function CreatedContentDashboard() {
       }
 
       const connections = await connectionResponse.json()
-      const platform = contentItem.platform?.toLowerCase()
+      const platform = itemToPublish.platform?.toLowerCase()
       const isConnected = connections.some(conn => conn.platform?.toLowerCase() === platform && conn.is_active)
 
       if (!isConnected) {
-        showError(`Please connect your ${contentItem.platform} account first`)
+        showError(`Please connect your ${itemToPublish.platform} account first`)
         return
       }
 
       // Check if platform is supported for publishing
       const supportedPlatforms = ['facebook', 'instagram', 'linkedin', 'youtube']
       if (!supportedPlatforms.includes(platform)) {
-        showError(`Publishing to ${contentItem.platform} is not yet supported`)
+        showError(`Publishing to ${itemToPublish.platform} is not yet supported`)
         return
       }
 
       // Get the best image URL for posting
-      const imageUrl = getBestImageUrl(contentItem)
+      const imageUrl = getBestImageUrl(itemToPublish)
       console.log('📸 Publishing to', platform, 'with image URL:', imageUrl)
 
       // Validate that we have an image URL for Instagram
@@ -375,10 +408,10 @@ function CreatedContentDashboard() {
       }
 
       const postBody = {
-        message: contentItem.content,
-        title: contentItem.title,
-        hashtags: contentItem.hashtags || [],
-        content_id: contentItem.id
+        message: itemToPublish.content,
+        title: itemToPublish.title,
+        hashtags: itemToPublish.hashtags || [],
+        content_id: itemToPublish.id
       }
 
       if (imageUrl) {
@@ -433,16 +466,18 @@ function CreatedContentDashboard() {
 
       // Update local state
       setContent(prev => prev.map(item =>
-        item.id === contentItem.id
+        item.id === itemToPublish.id
           ? { ...item, status: 'published', published_at: new Date().toISOString() }
           : item
       ))
 
-      showSuccess(`Successfully published to ${contentItem.platform}!`)
+      showSuccess(`Successfully published to ${itemToPublish.platform}!`)
+      setShowPublishModal(false)
+      setItemToPublish(null)
 
     } catch (error) {
       console.error('Error publishing content:', error)
-      showError(`Failed to publish to ${contentItem.platform}: ${error.message}`)
+      showError(`Failed to publish to ${itemToPublish.platform}: ${error.message}`)
     } finally {
       setIsPublishing(false)
     }
@@ -494,6 +529,334 @@ function CreatedContentDashboard() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Not Authenticated</h1>
           <p className="text-gray-600">Please log in to access content dashboard.</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Publish Confirmation Modal
+  const renderPublishModal = () => {
+    if (!showPublishModal || !itemToPublish) return null
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowPublishModal(false)}
+        />
+        <div className={`relative max-w-md w-full rounded-2xl shadow-2xl overflow-hidden ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          {/* Header */}
+          <div className={`p-6 border-b ${
+            isDarkMode
+              ? 'border-gray-700 bg-gradient-to-r from-pink-900/20 to-rose-900/20'
+              : 'border-gray-200 bg-gradient-to-r from-pink-50 to-rose-50'
+          }`}>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </div>
+              <div>
+                <h3 className={`text-lg font-normal ${
+                  isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                }`}>
+                  Publish Content
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="p-6">
+            <div className="flex items-start space-x-4">
+              {/* Emily Avatar */}
+              <div className="flex-shrink-0">
+                <img
+                  src="/emily_icon.png"
+                  alt="Emily"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-pink-200"
+                  onError={(e) => {
+                    e.target.src = '/default-logo.png'
+                  }}
+                />
+              </div>
+
+              {/* Message */}
+              <div className="flex-1">
+                <div className={`relative p-4 rounded-2xl ${
+                  isDarkMode
+                    ? 'bg-gray-700 border border-gray-600'
+                    : 'bg-pink-50 border border-pink-200'
+                }`}>
+                  {/* Speech bubble pointer */}
+                  <div className={`absolute left-0 top-4 transform -translate-x-2 w-0 h-0 ${
+                    isDarkMode
+                      ? 'border-t-8 border-t-gray-700 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                      : 'border-t-8 border-t-pink-50 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                  }`} />
+
+                  <p className={`text-sm leading-relaxed ${
+                    isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
+                    <span className="font-normal text-pink-500">Emily here!</span> 🚀<br />
+                    Ready to publish <strong>"{itemToPublish.title || 'this content'}"</strong> to <strong>{itemToPublish.platform}</strong>?
+                    This will share your content with your audience!
+                  </p>
+                </div>
+
+                <div className="mt-4 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setShowPublishModal(false)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      isDarkMode
+                        ? 'text-gray-400 bg-gray-700 hover:bg-gray-600'
+                        : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+                    }`}
+                    disabled={isPublishing}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmPublish}
+                    disabled={isPublishing}
+                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-rose-600 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2"
+                  >
+                    {isPublishing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Publishing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        <span>Publish</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Schedule Confirmation Modal
+  const renderScheduleConfirmModal = () => {
+    if (!showScheduleConfirmModal || !itemToSchedule) return null
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowScheduleConfirmModal(false)}
+        />
+        <div className={`relative max-w-md w-full rounded-2xl shadow-2xl overflow-hidden ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          {/* Header */}
+          <div className={`p-6 border-b ${
+            isDarkMode
+              ? 'border-gray-700 bg-gradient-to-r from-green-900/20 to-emerald-900/20'
+              : 'border-gray-200 bg-gradient-to-r from-green-50 to-emerald-50'
+          }`}>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className={`text-lg font-normal ${
+                  isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                }`}>
+                  Schedule Content
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="p-6">
+            <div className="flex items-start space-x-4">
+              {/* Emily Avatar */}
+              <div className="flex-shrink-0">
+                <img
+                  src="/emily_icon.png"
+                  alt="Emily"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-pink-200"
+                  onError={(e) => {
+                    e.target.src = '/default-logo.png'
+                  }}
+                />
+              </div>
+
+              {/* Message */}
+              <div className="flex-1">
+                <div className={`relative p-4 rounded-2xl ${
+                  isDarkMode
+                    ? 'bg-gray-700 border border-gray-600'
+                    : 'bg-pink-50 border border-pink-200'
+                }`}>
+                  {/* Speech bubble pointer */}
+                  <div className={`absolute left-0 top-4 transform -translate-x-2 w-0 h-0 ${
+                    isDarkMode
+                      ? 'border-t-8 border-t-gray-700 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                      : 'border-t-8 border-t-pink-50 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                  }`} />
+
+                  <p className={`text-sm leading-relaxed ${
+                    isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
+                    <span className="font-normal text-pink-500">Emily here!</span> ⏰<br />
+                    Ready to schedule <strong>"{itemToSchedule.title || 'this content'}"</strong> for later?
+                    I'll help you pick the perfect time to share it!
+                  </p>
+                </div>
+
+                <div className="mt-4 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setShowScheduleConfirmModal(false)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      isDarkMode
+                        ? 'text-gray-400 bg-gray-700 hover:bg-gray-600'
+                        : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+                    }`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmSchedule}
+                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-rose-600 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Schedule</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Delete Confirmation Modal
+  const renderDeleteModal = () => {
+    if (!showDeleteModal || !itemToDelete) return null
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowDeleteModal(false)}
+        />
+        <div className={`relative max-w-md w-full rounded-2xl shadow-2xl overflow-hidden ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          {/* Header */}
+          <div className={`p-6 border-b ${
+            isDarkMode
+              ? 'border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20'
+              : 'border-gray-200 bg-gradient-to-r from-red-50 to-red-100'
+          }`}>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <div>
+                <h3 className={`text-lg font-normal ${
+                  isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                }`}>
+                  Delete Content
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="p-6">
+            <div className="flex items-start space-x-4">
+              {/* Leo Avatar */}
+              <div className="flex-shrink-0">
+                <img
+                  src="/leo_logo.png"
+                  alt="Leo"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-red-200"
+                  onError={(e) => {
+                    e.target.src = '/default-logo.png'
+                  }}
+                />
+              </div>
+
+              {/* Message */}
+              <div className="flex-1">
+                <div className={`relative p-4 rounded-2xl ${
+                  isDarkMode
+                    ? 'bg-gray-700 border border-gray-600'
+                    : 'bg-red-50 border border-red-200'
+                }`}>
+                  {/* Speech bubble pointer */}
+                  <div className={`absolute left-0 top-4 transform -translate-x-2 w-0 h-0 ${
+                    isDarkMode
+                      ? 'border-t-8 border-t-gray-700 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                      : 'border-t-8 border-t-red-50 border-r-8 border-r-transparent border-b-8 border-b-transparent border-l-8 border-l-transparent'
+                  }`} />
+
+                  <p className={`text-sm leading-relaxed ${
+                    isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
+                    <span className="font-semibold text-red-500">Leo here!</span> ⚠️<br />
+                    Are you sure you want to delete <strong>"{itemToDelete.title || 'this content'}"</strong>?
+                    This action cannot be undone and will permanently remove the content.
+                  </p>
+                </div>
+
+                <div className="mt-4 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      isDarkMode
+                        ? 'text-gray-400 bg-gray-700 hover:bg-gray-600'
+                        : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+                    }`}
+                    disabled={isDeleting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    disabled={isDeleting}
+                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2"
+                  >
+                    {isDeleting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Deleting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>Delete</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -592,6 +955,9 @@ function CreatedContentDashboard() {
   return (
     <>
       {renderScheduleModal()}
+      {renderDeleteModal()}
+      {renderPublishModal()}
+      {renderScheduleConfirmModal()}
       <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <SideNavbar />
       <MobileNavigation

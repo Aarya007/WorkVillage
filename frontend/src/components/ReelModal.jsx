@@ -216,11 +216,6 @@ const ReelModal = ({ content, onClose }) => {
               )}
             </div>
             <div>
-              <h2 className={`text-3xl font-bold ${
-                isDarkMode ? 'text-white' : 'text-gray-900'
-              }`}>
-                {displayContent.title || 'Reel Content'}
-              </h2>
               <p className={`text-base ${
                 isDarkMode ? 'text-gray-300' : 'text-gray-600'
               }`}>
@@ -255,7 +250,7 @@ const ReelModal = ({ content, onClose }) => {
               }`}>
                 <div className="flex items-center justify-between">
                   <div>
-                          <h3 className={`text-xl font-semibold ${
+                          <h3 className={`text-xl font-normal ${
                             isDarkMode ? 'text-white' : 'text-gray-900'
                           }`}>
                             Video Script
@@ -291,14 +286,14 @@ const ReelModal = ({ content, onClose }) => {
                   <ReactMarkdown
                     components={{
                       p: ({ children }) => <p className={`mb-3 leading-relaxed text-base ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>{children}</p>,
-                      strong: ({ children }) => <strong className={`font-bold text-base ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>{children}</strong>,
+                      strong: ({ children }) => <strong className={`font-normal text-base ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>{children}</strong>,
                       em: ({ children }) => <em className={`italic text-base ${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`}>{children}</em>,
                       ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-2">{children}</ul>,
                       ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-2">{children}</ol>,
                       li: ({ children }) => <li className={`ml-4 text-base ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>{children}</li>,
-                      h1: ({ children }) => <h1 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h1>,
-                      h2: ({ children }) => <h2 className={`text-lg font-bold mb-3 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h2>,
-                      h3: ({ children }) => <h3 className={`text-base font-bold mb-2 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h3>,
+                      h1: ({ children }) => <h1 className={`text-xl font-normal mb-3 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h1>,
+                      h2: ({ children }) => <h2 className={`text-lg font-normal mb-3 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h2>,
+                      h3: ({ children }) => <h3 className={`text-base font-normal mb-2 ${isDarkMode ? 'text-yellow-300' : 'text-yellow-600'}`}>{children}</h3>,
                       blockquote: ({ children }) => (
                         <blockquote className={`border-l-4 pl-4 italic my-3 text-base ${isDarkMode ? 'border-blue-400 text-blue-200' : 'border-blue-500 text-blue-700'}`}>
                           {children}
@@ -323,7 +318,7 @@ const ReelModal = ({ content, onClose }) => {
             {/* Title */}
             {displayContent.title && (
               <div>
-                <h2 className={`text-3xl font-bold leading-tight ${
+                <h2 className={`text-3xl font-normal leading-tight ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}>
                   {displayContent.title}
@@ -366,7 +361,7 @@ const ReelModal = ({ content, onClose }) => {
                 <div className="absolute inset-0 bg-black bg-opacity-70 rounded-lg"></div>
                 {/* Upload Reel Button Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <label className={`px-6 py-3 rounded-lg font-semibold text-white shadow-lg transform transition-all duration-200 hover:scale-105 cursor-pointer flex items-center gap-2 ${
+                  <label className={`px-6 py-3 rounded-lg font-normal text-white shadow-lg transform transition-all duration-200 hover:scale-105 cursor-pointer flex items-center gap-2 ${
                     isDarkMode
                       ? 'bg-blue-600 hover:bg-blue-500 border border-blue-500'
                       : 'bg-blue-500 hover:bg-blue-600'
@@ -392,7 +387,7 @@ const ReelModal = ({ content, onClose }) => {
             {/* Hashtags */}
             {displayContent.hashtags && Array.isArray(displayContent.hashtags) && displayContent.hashtags.length > 0 && (
               <div>
-                <h3 className={`text-xl font-semibold mb-3 ${
+                <h3 className={`text-xl font-normal mb-3 ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}>
                   🏷️ Hashtags

@@ -41,6 +41,7 @@ from routers.analytics_insights import router as analytics_insights_router
 from routers.atsn_chatbot import router as atsn_chatbot_router
 from routers.profile import router as profile_router
 from services.scheduler import start_analytics_scheduler, stop_analytics_scheduler, get_scheduler_status, trigger_analytics_collection_now
+from services.image_editor_service import image_editor_service
 
 # Load environment variables
 load_dotenv()
@@ -115,6 +116,7 @@ app.include_router(blogs_router)
 app.include_router(custom_blog_router)
 app.include_router(simple_image_editor_router)
 app.include_router(template_editor_router)
+
 app.include_router(subscription_router)
 app.include_router(website_analysis_router)
 app.include_router(trial_router)
@@ -357,6 +359,41 @@ async def linkedin_oauth_post_alias():
 @app.get("/test-auth")
 async def test_auth(current_user: User = Depends(get_current_user)):
     return {"message": "Authentication successful!", "user": current_user.email}
+
+# Image Edit API endpoint
+class ImageEditRequest(BaseModel):
+    imageUrl: str
+    instruction: str
+    prompt: str
+
+@app.post("/api/edit-image")
+async def edit_image(
+    request: ImageEditRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Edit image with AI based on user instructions"""
+    try:
+        logger.info(f"Image edit request for user {current_user.id}")
+
+        # Call the existing manual edit functionality
+        result = await image_editor_service.apply_manual_instructions(
+            user_id=current_user.id,
+            input_image_url=request.imageUrl,
+            content=request.prompt,  # Use the full prompt with logo preservation
+            instructions=request.instruction
+        )
+
+        if result["success"]:
+            return result
+        else:
+            logger.error(f"Image edit failed: {result['error']}")
+            raise HTTPException(status_code=400, detail=result["error"])
+
+    except Exception as e:
+        logger.error(f"Error in edit-image endpoint: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/debug/users")
 async def debug_users():
