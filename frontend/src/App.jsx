@@ -43,6 +43,7 @@ import ContactUs from './pages/ContactUs.jsx'
 import AddBlogPage from './pages/AddBlogPage.jsx'
 import BlogListingPage from './pages/BlogListingPage.jsx'
 import BlogDetailPage from './pages/BlogDetailPage.jsx'
+import WorkVillageLandingPage from './pages/WorkVillageLandingPage.jsx'
 import BlogProtectedRoute from './components/BlogProtectedRoute.jsx'
 // Subscription Components
 import SubscriptionSelector from './components/SubscriptionSelector'
@@ -164,6 +165,7 @@ function AppContent() {
       <Routes>
         {/*  Routes */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/workvillage" element={<WorkVillageLandingPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/cancellation-refunds" element={<CancellationAndRefunds />} />
