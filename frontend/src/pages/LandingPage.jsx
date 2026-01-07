@@ -22,7 +22,7 @@ const Page = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'features', 'agents', 'pricing'];
+      const sections = ['hero', 'ecosystem', 'pricing'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -52,8 +52,8 @@ const Page = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "atsn ai",
-    "description": "atsn ai | Autonomous AI Agents, Custom AI Agents and Chatbots ",
+    "name": "atsn.ai",
+    "description": "atsn.ai autonomous AI agent ecosystem and WorkVillage platform for business automation",
     "url": "https://atsnai.com",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
@@ -70,25 +70,25 @@ const Page = () => {
     },
     "creator": {
       "@type": "Organization",
-      "name": "atsn ai",
+      "name": "atsn.ai",
       "url": "https://atsnai.com"
     },
     "featureList": [
-      "Autonomous AI Agents",
-      "Digital Marketing Automation",
-      "Content Creation",
-      "Social Media Management",
-      "Campaign Optimization",
-      "Analytics & Reporting"
+      "Autonomous AI Agent Systems",
+      "WorkVillage Platform",
+      "AI Agent Collaboration",
+      "Business Process Automation",
+      "Multi-Agent Coordination",
+      "Intelligent Workflow Management"
     ]
   };
 
   return (
     <>
       <SEO
-        title="atsn ai | Autonomous AI Agents, Custom AI Agents and Chatbots"
-        description="atsn ai creates autonomous AI agents, chatbots, and consultancy solutions. Meet Emily, your AI marketing teammate for smarter business automation."
-        keywords="AI agents, autonomous AI, digital marketing AI, Emily AI agent, AI content creation, social media automation, AI marketing, business automation, AI chatbot, AI consultancy, artificial intelligence"
+        title="atsn.ai | Autonomous AI Agent Ecosystem & WorkVillage Platform"
+        description="atsn.ai builds autonomous AI agent systems that operate beyond traditional tools. WorkVillage is our flagship platform where AI agents collaborate as a team to transform business automation."
+        keywords="AI agents, autonomous AI, AI ecosystem, WorkVillage, AI agent systems, business automation, AI collaboration, autonomous systems, AI platform, artificial intelligence"
         structuredData={structuredData}
       />
       
@@ -103,18 +103,26 @@ const Page = () => {
               </div>
               <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
                 <button
+<<<<<<< HEAD
                   onClick={() => scrollToSection('features')}
                   className={`text-sm sm:text-base transition-colors font-normal ${activeSection === 'features' ? 'text-pink-400' : 'text-gray-300 hover:text-white'}`}
+=======
+                  onClick={() => scrollToSection('ecosystem')}
+                  className={`text-sm sm:text-base transition-colors ${activeSection === 'ecosystem' ? 'text-[#9E005C]' : 'text-[#2E2E2E]/70 hover:text-[#2E2E2E]'}`}
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
                 >
-                  Features
+                  Ecosystem
                 </button>
                 <button
+<<<<<<< HEAD
                   onClick={() => scrollToSection('agents')}
                   className={`text-sm sm:text-base transition-colors font-normal ${activeSection === 'agents' ? 'text-pink-400' : 'text-gray-300 hover:text-white'}`}
                 >
                   Agents
                 </button>
                 <button
+=======
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
                   onClick={() => scrollToSection('pricing')}
                   className={`text-sm sm:text-base transition-colors font-normal ${activeSection === 'pricing' ? 'text-pink-400' : 'text-gray-300 hover:text-white'}`}
                 >
@@ -151,18 +159,26 @@ const Page = () => {
         <div className="fixed inset-0 z-40 md:hidden bg-gray-900/95 backdrop-blur-xl">
           <div className="flex flex-col items-center justify-center h-full space-y-6 sm:space-y-8">
             <button
+<<<<<<< HEAD
               onClick={() => scrollToSection('features')}
               className="text-lg sm:text-xl text-gray-300 hover:text-white transition-colors font-normal"
+=======
+              onClick={() => scrollToSection('ecosystem')}
+              className="text-lg sm:text-xl text-[#2E2E2E]/70 hover:text-[#2E2E2E] transition-colors"
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
             >
-              Features
+              Ecosystem
             </button>
             <button
+<<<<<<< HEAD
               onClick={() => scrollToSection('agents')}
               className="text-lg sm:text-xl text-gray-300 hover:text-white transition-colors font-normal"
             >
               Agents
             </button>
             <button
+=======
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
               onClick={() => scrollToSection('pricing')}
               className="text-lg sm:text-xl text-gray-300 hover:text-white transition-colors font-normal"
             >
@@ -225,14 +241,20 @@ const Page = () => {
         
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
           <button
+<<<<<<< HEAD
             onClick={() => scrollToSection('features')}
             className="text-gray-400 hover:text-white transition-colors animate-bounce"
+=======
+            onClick={() => scrollToSection('ecosystem')}
+            className="text-[#2E2E2E]/50 hover:text-[#2E2E2E] transition-colors animate-bounce"
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
           >
             <ChevronDown size={24} />
           </button>
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* Features Section */}
       <section id="features" className="py-12 sm:py-16 lg:py-20 bg-gray-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -406,9 +428,89 @@ const Page = () => {
                     <div className="inline-flex items-center space-x-1 bg-green-500/30 text-green-400 px-2 py-1 rounded-full text-xs mt-1">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <span>Now Live</span>
-                    </div>
+=======
+      {/* Ecosystem Section */}
+      <section id="ecosystem" className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6">
+              <span className="bg-gradient-to-r from-[#2E2E2E] via-[#9E005C] to-[#FF4D94] bg-clip-text text-transparent">
+                The atsn.ai Ecosystem
+              </span>
+            </h2>
+            <p className="text-sm xs:text-base sm:text-lg md:text-xl text-[#2E2E2E]/70 max-w-3xl mx-auto px-4 mb-8 sm:mb-10 lg:mb-12">
+              atsn.ai builds autonomous AI agent systems that go beyond simple tools or chatbots.
+              Our agents are intelligent systems designed to operate independently and collaborate as a team.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-[#9E005C] to-[#FF4D94] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Brain className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2E2E2E] mb-2">Autonomous AI Systems</h3>
+                    <p className="text-sm sm:text-base md:text-lg text-[#2E2E2E]/70 leading-relaxed">
+                      Unlike traditional AI tools, our agents are autonomous systems that make decisions,
+                      take actions, and continuously learn from their environment.
+                    </p>
                   </div>
                 </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-[#FF4D94] to-[#3F2B96] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2E2E2E] mb-2">Team Collaboration</h3>
+                    <p className="text-sm sm:text-base md:text-lg text-[#2E2E2E]/70 leading-relaxed">
+                      Multiple agents work together seamlessly, each specializing in different domains
+                      while contributing to unified business objectives.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-[#3F2B96] to-[#9E005C] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2E2E2E] mb-2">WorkVillage Platform</h3>
+                    <p className="text-sm sm:text-base md:text-lg text-[#2E2E2E]/70 leading-relaxed">
+                      WorkVillage is our flagship platform where autonomous agents operate as a cohesive team,
+                      transforming how businesses automate their operations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 sm:pt-6">
+                <Link
+                  to="/workvillage"
+                  className="group bg-[#9E005C] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium hover:bg-[#FF4D94] transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 w-fit"
+                >
+                  <span>Explore WorkVillage</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="aspect-square bg-gradient-to-br from-[#9E005C]/10 via-[#FF4D94]/10 to-[#3F2B96]/10 rounded-3xl p-8 sm:p-12">
+                <div className="w-full h-full bg-gradient-to-br from-white to-[#F6F6F6] rounded-2xl shadow-xl flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-[#9E005C] to-[#FF4D94] rounded-2xl flex items-center justify-center mx-auto">
+                      <Brain className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
+                    </div>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#2E2E2E]">WorkVillage</h3>
+                    <p className="text-sm sm:text-base text-[#2E2E2E]/70">Where AI Agents Work as a Team</p>
+                  </div>
+                </div>
+<<<<<<< HEAD
 
                 <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 leading-relaxed font-normal">
                   Your creative content specialist who crafts compelling copy, designs engaging visuals,
@@ -545,6 +647,10 @@ const Page = () => {
               </div>
             </div>
             </div>
+=======
+              </div>
+            </div>
+>>>>>>> dae9531b0e02cef110c0fa128e4bde825d1d1bf8
           </div>
         </div>
       </section>
