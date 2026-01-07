@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const HeroAmbientField = () => {
-  // WorkVillage color palette
+  // ATSN color palette
   const colors = [
     '#9E005C', // Primary brand
     '#FF4D94', // Accent pink
@@ -94,6 +94,7 @@ const HeroAmbientField = () => {
 };
 
 export default HeroAmbientField;
+
 
 
 
